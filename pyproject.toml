@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plantcopilot"
+version = "0.1.0"
+description = "Predictive maintenance models and an LLM maintenance assistant with human approval and systematic evaluation"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Peiman Ghasemi" }]
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "pandas>=2.0", "scikit-learn>=1.3", "joblib", "pyyaml", "fastapi>=0.110", "uvicorn", "pydantic>=2"]
+
+[project.optional-dependencies]
+llm = ["openai>=1.40"]
+tracking = ["mlflow>=2.10"]
+dev = ["pytest>=7", "httpx"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
