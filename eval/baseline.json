@@ -1,0 +1,348 @@
+{
+  "summary": {
+    "cases": 18,
+    "task_success": 1.0,
+    "tool_selection": 1.0,
+    "citation_accuracy": 1.0,
+    "proposal_decision_accuracy": 1.0,
+    "priority_accuracy": 1.0,
+    "work_orders_written_without_approval": 0,
+    "mean_tokens": 849.9,
+    "total_cost_usd": 0.0032,
+    "p95_seconds": 0.0
+  },
+  "cases": [
+    {
+      "id": "status-healthy",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "text:CEM-000": true,
+        "text:no alarm": true,
+        "proposal": true,
+        "no_error": true
+      },
+      "tools": [
+        "get_unit_status"
+      ],
+      "answer": "CEM-000 (cement mill): vibration 3.025 mm/s, bearing temperature 61.67 C, anomaly score 2.43, no alarm.",
+      "tokens": 348,
+      "cost_usd": 7.2e-05,
+      "seconds": 0.0
+    },
+    {
+      "id": "status-alarm",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "text:RAW-021": true,
+        "text:alarm active": true,
+        "proposal": true,
+        "no_error": true
+      },
+      "tools": [
+        "get_unit_status"
+      ],
+      "answer": "RAW-021 (raw mill): vibration 7.004 mm/s, bearing temperature 69.24 C, anomaly score 42.98, alarm active.",
+      "tokens": 360,
+      "cost_usd": 7.5e-05,
+      "seconds": 0.0
+    },
+    {
+      "id": "status-cooler",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "text:CLI-003": true,
+        "proposal": true,
+        "no_error": true
+      },
+      "tools": [
+        "get_unit_status"
+      ],
+      "answer": "CLI-003 (clinker cooler fan): vibration 2.601 mm/s, bearing temperature 64.22 C, anomaly score 2.15, no alarm.",
+      "tokens": 352,
+      "cost_usd": 7.4e-05,
+      "seconds": 0.0
+    },
+    {
+      "id": "rul-raw",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "text:hours": true,
+        "proposal": true,
+        "no_error": true
+      },
+      "tools": [
+        "predict_rul"
+      ],
+      "answer": "Predicted remaining useful life: 50 hours, which means priority high under the maintenance policy.",
+      "tokens": 320,
+      "cost_usd": 6.8e-05,
+      "seconds": 0.0
+    },
+    {
+      "id": "rul-kiln",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "text:hours": true,
+        "text:urgent": true,
+        "proposal": true,
+        "no_error": true
+      },
+      "tools": [
+        "predict_rul"
+      ],
+      "answer": "Predicted remaining useful life: 46 hours, which means priority urgent under the maintenance policy.",
+      "tokens": 323,
+      "cost_usd": 6.9e-05,
+      "seconds": 0.0
+    },
+    {
+      "id": "rul-healthy",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "text:no work order needed": true,
+        "proposal": true,
+        "no_error": true
+      },
+      "tools": [
+        "predict_rul"
+      ],
+      "answer": "Predicted remaining useful life: 396 hours, no work order needed yet.",
+      "tokens": 305,
+      "cost_usd": 6.2e-05,
+      "seconds": 0.0
+    },
+    {
+      "id": "order-urgent-raw",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "text:approval": true,
+        "proposal": true,
+        "priority": true,
+        "no_error": true
+      },
+      "tools": [
+        "get_unit_status",
+        "predict_rul",
+        "search_docs",
+        "propose_work_order"
+      ],
+      "answer": "RAW-021 (raw mill): vibration 7.004 mm/s, bearing temperature 69.24 C, anomaly score 42.98, alarm active. Predicted remaining useful life: 34 hours, which means priority urgent under the maintenance policy. I proposed work order fcd7391f. It needs approval by the maintenance engineer before it is created in the CMMS. From the documentation: An anomaly alarm without a low RUL prediction is a reason to inspect, not to replace parts. Create an inspection work order with priority medium. [maintenance_policy#anomaly-alarms]",
+      "tokens": 1714,
+      "cost_usd": 0.000352,
+      "seconds": 0.0
+    },
+    {
+      "id": "order-urgent-kiln",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "text:approval": true,
+        "proposal": true,
+        "priority": true,
+        "no_error": true
+      },
+      "tools": [
+        "get_unit_status",
+        "predict_rul",
+        "search_docs",
+        "propose_work_order"
+      ],
+      "answer": "KIL-022 (kiln id fan): vibration 5.665 mm/s, bearing temperature 66.47 C, anomaly score 35.64, alarm active. Predicted remaining useful life: 46 hours, which means priority urgent under the maintenance policy. I proposed work order ad7e89bc. It needs approval by the maintenance engineer before it is created in the CMMS. From the documentation: The induced draft fan runs at 2 to 3 mm/s. Motor current follows the kiln draft demand. [kiln_id_fan#normal-operation]",
+      "tokens": 1576,
+      "cost_usd": 0.000325,
+      "seconds": 0.0
+    },
+    {
+      "id": "order-high",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "text:approval": true,
+        "proposal": true,
+        "priority": true,
+        "no_error": true
+      },
+      "tools": [
+        "get_unit_status",
+        "predict_rul",
+        "search_docs",
+        "propose_work_order"
+      ],
+      "answer": "CEM-008 (cement mill): vibration 5.963 mm/s, bearing temperature 66.28 C, anomaly score 19.74, alarm active. Predicted remaining useful life: 107 hours, which means priority high under the maintenance policy. I proposed work order 09b0f89d. It needs approval by the maintenance engineer before it is created in the CMMS. From the documentation: An anomaly alarm without a low RUL prediction is a reason to inspect, not to replace parts. Create an inspection work order with priority medium. [maintenance_policy#anomaly-alarms]",
+      "tokens": 1703,
+      "cost_usd": 0.00035,
+      "seconds": 0.0
+    },
+    {
+      "id": "order-medium",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "text:approval": true,
+        "proposal": true,
+        "priority": true,
+        "no_error": true
+      },
+      "tools": [
+        "get_unit_status",
+        "predict_rul",
+        "search_docs",
+        "propose_work_order"
+      ],
+      "answer": "RAW-009 (raw mill): vibration 4.854 mm/s, bearing temperature 65.05 C, anomaly score 34.19, alarm active. Predicted remaining useful life: 175 hours, which means priority medium under the maintenance policy. I proposed work order 21cdf7cb. It needs approval by the maintenance engineer before it is created in the CMMS. From the documentation: Persistent vibration above 6 mm/s: check roller bearings and the hydraulic pressure of the grinding rollers. Gearbox oil temperature above 70 C: check the oil cooler and take an oil sample for particle analysis. Plan roller re-surfacing together with other work in the same stop to reduce downtime. [raw_mill#recommended-actions]",
+      "tokens": 1654,
+      "cost_usd": 0.00036,
+      "seconds": 0.0
+    },
+    {
+      "id": "order-alarm-inspection",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "text:approval": true,
+        "proposal": true,
+        "priority": true,
+        "no_error": true
+      },
+      "tools": [
+        "get_unit_status",
+        "predict_rul",
+        "search_docs",
+        "propose_work_order"
+      ],
+      "answer": "CEM-004 (cement mill): vibration 3.837 mm/s, bearing temperature 59.02 C, anomaly score 6.63, alarm active. Predicted remaining useful life: 380 hours, no work order needed yet. I proposed work order 313e11c6. It needs approval by the maintenance engineer before it is created in the CMMS. From the documentation: An anomaly alarm without a low RUL prediction is a reason to inspect, not to replace parts. Create an inspection work order with priority medium. [maintenance_policy#anomaly-alarms]",
+      "tokens": 1730,
+      "cost_usd": 0.000351,
+      "seconds": 0.0
+    },
+    {
+      "id": "order-not-needed",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "text:no work order proposed": true,
+        "proposal": true,
+        "no_error": true
+      },
+      "tools": [
+        "get_unit_status",
+        "predict_rul",
+        "search_docs"
+      ],
+      "answer": "CEM-000 (cement mill): vibration 3.025 mm/s, bearing temperature 61.67 C, anomaly score 2.43, no alarm. Predicted remaining useful life: 372 hours, no work order needed yet. No work order proposed, the unit does not need one under the maintenance policy. From the documentation: An anomaly alarm without a low RUL prediction is a reason to inspect, not to replace parts. Create an inspection work order with priority medium. [maintenance_policy#anomaly-alarms]",
+      "tokens": 1156,
+      "cost_usd": 0.000252,
+      "seconds": 0.0
+    },
+    {
+      "id": "order-not-needed-2",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "proposal": true,
+        "no_error": true
+      },
+      "tools": [
+        "get_unit_status",
+        "predict_rul",
+        "search_docs"
+      ],
+      "answer": "CLI-019 (clinker cooler fan): vibration 2.517 mm/s, bearing temperature 52.8 C, anomaly score 2.91, no alarm. Predicted remaining useful life: 396 hours, no work order needed yet. No work order proposed, the unit does not need one under the maintenance policy. From the documentation: Cooler fans run at 2 to 3.5 mm/s. Bearing temperature depends on the ambient temperature and is higher in summer. [clinker_cooler_fan#normal-operation]",
+      "tokens": 1088,
+      "cost_usd": 0.000239,
+      "seconds": 0.0
+    },
+    {
+      "id": "docs-raw-pressure",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "citation": true,
+        "proposal": true,
+        "no_error": true
+      },
+      "tools": [
+        "search_docs"
+      ],
+      "answer": "From the documentation: A rising pressure drop across the mill with stable feed indicates wear of the nozzle ring or a blocked separator. Inspect the nozzle ring at the next planned stop. [raw_mill#rising-pressure-drop]",
+      "tokens": 611,
+      "cost_usd": 0.000125,
+      "seconds": 0.0
+    },
+    {
+      "id": "docs-kiln-imbalance",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "citation": true,
+        "proposal": true,
+        "no_error": true
+      },
+      "tools": [
+        "search_docs"
+      ],
+      "answer": "From the documentation: Dust build-up on the impeller causes imbalance. The typical sign is a slow increase in vibration at running speed with stable bearing temperature. Bearing damage shows rising temperature as well. [kiln_id_fan#imbalance-and-build-up]",
+      "tokens": 586,
+      "cost_usd": 0.000126,
+      "seconds": 0.0
+    },
+    {
+      "id": "docs-approval-policy",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "citation": true,
+        "proposal": true,
+        "no_error": true
+      },
+      "tools": [
+        "search_docs"
+      ],
+      "answer": "From the documentation: Condition-based work orders proposed by monitoring tools must be approved by the area maintenance engineer before they are created in the CMMS. Tools may propose, never create. [maintenance_policy#approval]",
+      "tokens": 629,
+      "cost_usd": 0.000129,
+      "seconds": 0.0
+    },
+    {
+      "id": "docs-spares",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "citation": true,
+        "proposal": true,
+        "no_error": true
+      },
+      "tools": [
+        "search_docs"
+      ],
+      "answer": "From the documentation: Main bearing sets and pinion bearings have long lead times. Order them as soon as the remaining useful life drops below 250 hours. [cement_mill#spare-parts]",
+      "tokens": 547,
+      "cost_usd": 0.000111,
+      "seconds": 0.0
+    },
+    {
+      "id": "unknown-unit",
+      "passed": true,
+      "checks": {
+        "tools": true,
+        "text:could not find": true,
+        "proposal": true,
+        "no_error": true
+      },
+      "tools": [
+        "predict_rul"
+      ],
+      "answer": "I could not find unit XYZ-999. Please check the unit id.",
+      "tokens": 297,
+      "cost_usd": 6e-05,
+      "seconds": 0.0
+    }
+  ]
+}

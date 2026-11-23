@@ -1,0 +1,93 @@
+# Evaluation cases for the maintenance assistant.
+# expect_tools: tools that must be called (order not checked)
+# expect_cite: a documentation id the answer must cite
+# expect_text: phrases the answer must contain (case insensitive)
+# expect_proposal: whether a work order proposal must (true) or must not (false) be made
+- id: status-healthy
+  question: What is the status of CEM-000?
+  expect_tools: [get_unit_status]
+  expect_text: [CEM-000, no alarm]
+  expect_proposal: false
+- id: status-alarm
+  question: Is there an alarm on RAW-021? What is its condition?
+  expect_tools: [get_unit_status]
+  expect_text: [RAW-021, alarm active]
+  expect_proposal: false
+- id: status-cooler
+  question: Show me the health of CLI-003.
+  expect_tools: [get_unit_status]
+  expect_text: [CLI-003]
+  expect_proposal: false
+- id: rul-raw
+  question: How long can RAW-017 run before it fails?
+  expect_tools: [predict_rul]
+  expect_text: [hours]
+  expect_proposal: false
+- id: rul-kiln
+  question: What is the remaining useful life of KIL-022?
+  expect_tools: [predict_rul]
+  expect_text: [hours, urgent]
+  expect_proposal: false
+- id: rul-healthy
+  question: Remaining life of CLI-019?
+  expect_tools: [predict_rul]
+  expect_text: [no work order needed]
+  expect_proposal: false
+- id: order-urgent-raw
+  question: Please create a work order for RAW-021 if it needs one.
+  expect_tools: [get_unit_status, predict_rul]
+  expect_text: [approval]
+  expect_proposal: true
+- id: order-urgent-kiln
+  question: Schedule maintenance for KIL-022 according to the policy.
+  expect_tools: [get_unit_status, predict_rul]
+  expect_text: [approval]
+  expect_proposal: true
+- id: order-high
+  question: Create a work order for CEM-008 if needed.
+  expect_tools: [get_unit_status, predict_rul]
+  expect_text: [approval]
+  expect_proposal: true
+- id: order-medium
+  question: Plan maintenance for RAW-009.
+  expect_tools: [get_unit_status, predict_rul]
+  expect_text: [approval]
+  expect_proposal: true
+- id: order-alarm-inspection
+  question: CEM-004 shows an alarm. Create a work order if the policy requires it.
+  expect_tools: [get_unit_status, predict_rul]
+  expect_text: [approval]
+  expect_proposal: true
+- id: order-not-needed
+  question: Create a work order for CEM-000 if needed.
+  expect_tools: [get_unit_status, predict_rul]
+  expect_text: [no work order proposed]
+  expect_proposal: false
+- id: order-not-needed-2
+  question: Do we need to schedule maintenance for CLI-019?
+  expect_tools: [get_unit_status, predict_rul]
+  expect_proposal: false
+- id: docs-raw-pressure
+  question: What should I check when the raw mill pressure drop rises?
+  expect_tools: [search_docs]
+  expect_cite: raw_mill#rising-pressure-drop
+  expect_proposal: false
+- id: docs-kiln-imbalance
+  question: Why does the kiln ID fan vibrate more while bearing temperature is stable, what should we do?
+  expect_tools: [search_docs]
+  expect_cite: kiln_id_fan
+  expect_proposal: false
+- id: docs-approval-policy
+  question: What is the policy for approval of condition-based work orders?
+  expect_tools: [search_docs]
+  expect_cite: maintenance_policy#approval
+  expect_proposal: false
+- id: docs-spares
+  question: When should spare bearings for the cement mill be ordered?
+  expect_tools: [search_docs]
+  expect_cite: cement_mill#spare-parts
+  expect_proposal: false
+- id: unknown-unit
+  question: How long until XYZ-999 fails?
+  expect_text: [could not find]
+  expect_proposal: false
